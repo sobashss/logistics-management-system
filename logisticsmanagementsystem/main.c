@@ -260,9 +260,36 @@ void setDistance(){
 
     printf("Distance updated successfully!");
 
+}
+
+void displayDistanceTable(){
+
+    if (cityCount == 0) {
+        printf("Error: No cities added. Cannot display distance table!\n");
+        return;
+    }
+
+    printf("\n--- Distance Table (km) ---\n");
+    printf("        ");
+    for (int i = 0; i < cityCount; i++) {
+        printf("%s | ", cityNames[i]);
+    }
+    printf("\n");
 
 
+    printf("-------");
+    for (int i = 0; i < cityCount; i++) {
+        printf("-------");
+    }
+    printf("\n");
 
+    for (int i = 0; i < cityCount; i++) {
+        printf("%s |",cityNames[i]);
 
+        for (int j = 0; j < cityCount; j++) {
+            printf("  %d   |", distance[i][j]); //
+        }
+        printf("\n");
+    }
 
 }
