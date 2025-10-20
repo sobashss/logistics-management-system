@@ -110,27 +110,28 @@ void addCity(){
     if(cityCount>=MAX_CITIES){
         printf("Error: Maximum number of cities exceeded.\n");
     }
+    else{
+        printf("Enter Name of the City: ");
+        scanf("%s",newcityname);
 
-    printf("Enter Name of the City: \n");
-    fgets(newcityname,sizeof(newcityname),stdin);
+        int exist=0; //this means name is not exist
 
-    int exist=0; //this means name is not exist
+        for(int i=0;i<cityCount;i++){
 
-    for(int i=0;i<cityCount;i++){
-
-        if(strcmp(cityNames[i],newcityname) == 1){
+            if(strcmp(cityNames[i],newcityname) == 1){
             exist = 1;
+            }
         }
-    }
 
-    if(exist==0){
+        if(exist==0){
         strcpy(cityNames[cityCount],newcityname);
         cityCount++;
 
-    }
+        }
 
-    if(exist==1){
+        if(exist==1){
         printf("The city already exists.\n");
+        }
     }
 
 }
@@ -162,8 +163,8 @@ void renameCity(){
             printf("Invalid city index!\n");
         }
 
-        printf("Enter New Name: \n");
-        fgets(name,sizeof(name),stdin);
+        printf("Enter New Name: ");
+        scanf("%s",name);
 
 
         if(strlen(name)==0){
@@ -207,7 +208,7 @@ void removeCity(){
             strcpy(cityNames[i],cityNames[i+1]);
         }
         cityCount--;
-        printf("City Removed Successfully!");
+        printf("City Removed Successfully!\n");
 
 
     }

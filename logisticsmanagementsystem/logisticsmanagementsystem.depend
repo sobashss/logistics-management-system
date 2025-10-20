@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1760948456 source:c:\users\senit\onedrive\desktop\c project\logistics-management-system\logisticsmanagementsystem\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
