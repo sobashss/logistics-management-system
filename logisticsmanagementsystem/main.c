@@ -3,9 +3,10 @@
 #include <string.h>
 
 #define MAX_CITIES 30
+#define NAME_LENTH 60
 #define FUEL_PRICE 310
 
-char cityNames[MAX_CITIES][60];
+char cityNames[MAX_CITIES][NAME_LENTH];
 int cityCount=0;
 
 void manageCities();
@@ -105,34 +106,32 @@ void manageCities(){
 }
 
 void addCity(){
-    char newcityname[60];
+    char newcityname[NAME_LENTH];
 
     if(cityCount>=MAX_CITIES){
         printf("Error: Maximum number of cities exceeded.\n");
+        return;
     }
-    else{
-        printf("Enter Name of the City: ");
-        scanf("%s",newcityname);
 
-        int exist=0; //this means name is not exist
+    printf("Enter Name of the City: ");
+    scanf("%s",newcityname);
 
-        for(int i=0;i<cityCount;i++){
+    if(newcityname[0] == '\0'){
+        printf("Error: Name cannot be empty.\n");
+        return;
+    }
 
-            if(strcmp(cityNames[i],newcityname) == 1){
-            exist = 1;
-            }
+    for(int i=0;i<cityCount;i++){
+        if(strcmp(cityNames[i],newcityname) == 0){
+            printf("The city already exists.\n");
+            return;
         }
+    }
 
-        if(exist==0){
-        strcpy(cityNames[cityCount],newcityname);
+        strncpy(cityNames[cityCount], newcityname, NAME_LENTH);
+        cityNames[cityCount][NAME_LENTH - 1] = '\0';
         cityCount++;
-
-        }
-
-        if(exist==1){
-        printf("The city already exists.\n");
-        }
-    }
+        printf("New City added successfully!\n");
 
 }
 
@@ -152,7 +151,7 @@ void renameCity(){
     }
     else{
         int idx=0;
-        char name[60];
+        char name[NAME_LENTH];
 
         listCities();
 
@@ -167,7 +166,7 @@ void renameCity(){
         scanf("%s",name);
 
 
-        if(strlen(name)==0){
+        if (name[0] == '\0') {
             printf("Error: Name cannot be empty!");
 
         }
@@ -178,7 +177,8 @@ void renameCity(){
             }
         }
 
-        strcpy(cityNames[idx-1],name);
+        strncpy(cityNames[idx-1],name,NAME_LENTH);
+        cityNames[idx - 1][NAME_LENTH - 1] = '\0';
         printf("Rename Successful!\n");
 
     }
@@ -193,7 +193,7 @@ void removeCity(){
     }
     else{
         int idx=0;
-        char name[60];
+        char name[NAME_LENTH];
 
         listCities();
 
@@ -212,8 +212,5 @@ void removeCity(){
 
 
     }
-
-
-
 
 }
