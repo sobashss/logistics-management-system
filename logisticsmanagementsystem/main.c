@@ -9,7 +9,7 @@ char cityNames[MAX_CITIES][60];
 int cityCount=0;
 
 void manageCities();
-void inputName();
+void addCity();
 
 int main()
 {
@@ -98,7 +98,7 @@ void manageCities(){
 
 }
 
-void inputName(){
+void addCity(){
     char newcityname[60];
 
     if(cityCount>=MAX_CITIES){
@@ -129,4 +129,12 @@ void inputName(){
 
 }
 
-
+void listCities(){
+    if(cityCount==0){
+        printf("No cities available.");
+    }
+    printf("Available Cities: \n");
+    for(int i=0;i<cityCount;i++){
+        printf("%d. %s\n",i+1,cityNames[i]);
+    }
+}
