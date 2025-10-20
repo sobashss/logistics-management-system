@@ -3,10 +3,12 @@
 #include <string.h>
 
 #define MAX_CITIES 30
-#define NAME_LENTH 60
+#define NAME_LENGTH 60
 #define FUEL_PRICE 310
+#define MAX_DELIVERIES 50
 
-char cityNames[MAX_CITIES][NAME_LENTH];
+char cityNames[MAX_CITIES][NAME_LENGTH];
+int distance[MAX_CITIES][MAX_CITIES];
 int cityCount=0;
 
 void manageCities();
@@ -14,6 +16,7 @@ void addCity();
 void listCities();
 void renameCity();
 void removeCity();
+void setDistance();
 
 int main()
 {
@@ -57,7 +60,7 @@ int main()
                 break;
 
             default :
-                printf("Invalid Choice!\n");
+                printf("Error: Invalid Choice!\n");
                 break;
 
         }
@@ -94,7 +97,7 @@ void manageCities(){
             case 4:
                 break;
             default :
-                printf("Invalid Choice!\n");
+                printf("Error: Invalid Choice!\n");
                 break;
 
        }
@@ -106,7 +109,7 @@ void manageCities(){
 }
 
 void addCity(){
-    char newcityname[NAME_LENTH];
+    char newcityname[NAME_LENGTH];
 
     if(cityCount>=MAX_CITIES){
         printf("Error: Maximum number of cities exceeded.\n");
@@ -123,13 +126,13 @@ void addCity(){
 
     for(int i=0;i<cityCount;i++){
         if(strcmp(cityNames[i],newcityname) == 0){
-            printf("The city already exists.\n");
+            printf("Error: The city already exists.\n");
             return;
         }
     }
 
-        strncpy(cityNames[cityCount], newcityname, NAME_LENTH);
-        cityNames[cityCount][NAME_LENTH - 1] = '\0';
+        strncpy(cityNames[cityCount], newcityname, NAME_LENGTH);
+        cityNames[cityCount][NAME_LENGTH - 1] = '\0';
         cityCount++;
         printf("New City added successfully!\n");
 
@@ -137,7 +140,8 @@ void addCity(){
 
 void listCities(){
     if(cityCount==0){
-        printf("No cities available.");
+        printf("Error: No cities available!\n");
+        return;
     }
     printf("Available Cities: \n");
     for(int i=0;i<cityCount;i++){
@@ -147,41 +151,45 @@ void listCities(){
 
 void renameCity(){
     if(cityCount==0){
-        printf("No cities available.");
+        printf("Error: No cities available!\n");
+        return;
     }
-    else{
-        int idx=0;
-        char name[NAME_LENTH];
 
-        listCities();
+    int idx=0;
+    char name[NAME_LENGTH];
 
-        printf("Enter the index of the city you want to rename: ");
-        scanf("%d",&idx);
+    listCities();
 
-        if(idx<=0 || idx>cityCount){
-            printf("Invalid city index!\n");
-        }
+    printf("Enter the index of the city you want to rename: ");
+    scanf("%d",&idx);
 
-        printf("Enter New Name: ");
-        scanf("%s",name);
+    if(idx<=0 || idx>cityCount){
+        printf("Error: Invalid city index!\n");
+        return;
+    }
+
+    printf("Enter New Name: ");
+    scanf("%s",name);
 
 
-        if (name[0] == '\0') {
-            printf("Error: Name cannot be empty!");
-
-        }
-
-        for(int i=0; i<cityCount; i++){
-            if(i!=(idx-1) && strcmp(cityNames[i],name)==0){
-                    printf("\"%s\" city already exists.\n",name);
-            }
-        }
-
-        strncpy(cityNames[idx-1],name,NAME_LENTH);
-        cityNames[idx - 1][NAME_LENTH - 1] = '\0';
-        printf("Rename Successful!\n");
+    if (name[0] == '\0') {
+        printf("Error: Name cannot be empty!\n");
+        return;
 
     }
+
+    for(int i=0; i<cityCount; i++){
+        if(i!=(idx-1) && strcmp(cityNames[i],name)==0){
+            printf("\"%s\" city already exists.\n",name);
+            return;
+        }
+    }
+
+    strncpy(cityNames[idx-1],name,NAME_LENGTH);
+    cityNames[idx - 1][NAME_LENGTH - 1] = '\0';
+    printf("Rename Successful!\n");
+
+
 
 
 }
@@ -189,28 +197,72 @@ void renameCity(){
 void removeCity(){
 
     if(cityCount==0){
-        printf("No cities available!");
+        printf("Error: No cities available!\n");
+        return;
     }
-    else{
-        int idx=0;
-        char name[NAME_LENTH];
 
-        listCities();
+    int idx=0;
+    char name[NAME_LENGTH];
 
-        printf("Enter the index of the city you want to remove: ");
-        scanf("%d",&idx);
+    listCities();
 
-        if(idx<=0 || idx>cityCount){
-            printf("Invalid city index!\n");
-        }
+    printf("Enter the index of the city you want to remove: ");
+    scanf("%d",&idx);
 
-        for(int i=idx-1; i<cityCount-1;i++){
-            strcpy(cityNames[i],cityNames[i+1]);
-        }
-        cityCount--;
-        printf("City Removed Successfully!\n");
-
-
+    if(idx<=0 || idx>cityCount){
+        printf("Error: Invalid city index!\n");
+        return;
     }
+
+    for(int i=idx-1; i<cityCount-1;i++){
+        strcpy(cityNames[i],cityNames[i+1]);
+    }
+    cityCount--;
+    printf("City Removed Successfully!\n");
+
+}
+
+void setDistance(){
+    int city1, city2, dis;
+    if(cityCount<2){
+        printf("Error: Need at least two cities!\n");
+        return;
+    }
+
+    listCities();
+
+    printf("Enter city index (From): ");
+    scanf("%d",&city1);
+
+    printf("Enter city index (To): ");
+    scanf("%d",&city2);
+
+    if (city1<=0 || city1>cityCount || city2<=0 || city2>cityCount) {
+        printf("Error: Invalid city index!\n");
+        return;
+    }
+
+    if (city1 == city2) {
+        printf("Distance from a city to itself is always zero!\n");
+        return;
+    }
+
+    printf("Enter the distance between %s and %s (in km): ", cityNames[city1-1], cityNames[city2-1]);
+    scanf("%d",&dis);
+
+    if (dis <= 0) {
+        printf("Error: Distance must be a positive non zero value!\n");
+        return;
+    }
+
+    distance[city1-1][city2-1]= dis;
+    distance[city2-1][city1-1]= dis;
+
+    printf("Distance updated successfully!");
+
+
+
+
+
 
 }
