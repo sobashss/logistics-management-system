@@ -10,6 +10,8 @@ int cityCount=0;
 
 void manageCities();
 void addCity();
+void listCities();
+void renameCity();
 
 int main()
 {
@@ -112,18 +114,18 @@ void addCity(){
 
     for(int i=0;i<cityCount;i++){
 
-        if(strcmp(cityNames[i][60],newcityname) == 1){
+        if(strcmp(cityNames[i],newcityname) == 1){
             exist = 1;
         }
     }
 
-    if(exist=0){
+    if(exist==0){
         strcpy(cityNames[cityCount],newcityname);
         cityCount++;
 
     }
 
-    if(exist=1){
+    if(exist==1){
         printf("The city already exists.\n");
     }
 
@@ -137,4 +139,41 @@ void listCities(){
     for(int i=0;i<cityCount;i++){
         printf("%d. %s\n",i+1,cityNames[i]);
     }
+}
+
+void renameCity(){
+    if(cityCount==0){
+        printf("No cities available.");
+    }
+    else{
+        int idx=0;
+        char name[60];
+
+        listCities();
+
+        printf("Enter the index of the city you want to rename: ");
+        scanf("%d",&idx);
+
+        printf("Enter New Name: ");
+        fgets(name,sizeof(name),stdin);
+
+
+        if(strlen(name)==0){
+            printf("Error: Name cannot be empty!");
+
+        }
+
+        for(int i=0; i<cityCount; i++){
+            if(i!=(idx-1) && strcmp(cityNames[i],name)==0){
+                    printf("\"%s\" city already exists.\n",name);
+            }
+        }
+
+        strcpy(cityNames[idx-1],name);
+        printf("Rename Successful!\n");
+
+    }
+
+
+
 }
