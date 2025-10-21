@@ -4,7 +4,7 @@
 
 #define MAX_CITIES 30
 #define NAME_LENGTH 60
-#define FUEL_PRICE 310
+#define FUEL_PRICE 310.0
 #define MAX_DELIVERIES 50
 
 char cityNames[MAX_CITIES][NAME_LENGTH];
@@ -26,6 +26,13 @@ void setDistance();
 void displayDistanceTable();
 int selectVehicle();
 void deliveryRequest();
+float deliveryCost(float distance, float rate, float weight);
+float estimatedDeliveryTime(float distance, float speed);
+float fuelConsumption(float distance, float efficiency);
+float fuelCost(float consumption);
+float totalOperationalCost(float deliveryCost, float fuelCost);
+float profit(float deliveryCost);
+float finalCharge(float totalCost, float profit);
 
 int main(){
     int choice=0;
@@ -379,6 +386,40 @@ void deliveryRequest(){
 
 }
 
+//--Cost, Time, and Fuel Calculations--//
 
+float deliveryCost(float distance, float rate, float weight){
 
+    float cost = distance*rate*(1+weight/10000.0);
+    return cost;
+}
 
+float estimatedDeliveryTime(float distance, float speed){
+
+    float time = distance/speed;
+    return time;
+}
+
+float fuelConsumption(float distance, float efficiency){
+
+    float consumption = distance/efficiency;
+    return consumption;
+}
+
+float fuelCost(float consumption){
+    float cost = consumption*FUEL_PRICE;
+    return cost;
+}
+
+float totalOperationalCost(float deliveryCost, float fuelCost){
+    float total = deliveryCost+fuelCost;
+    return total;
+}
+
+float profit(float deliveryCost){
+    return deliveryCost*0.25;
+}
+
+float finalCharge(float totalCost, float profit){
+    return totalCost+profit;
+}
