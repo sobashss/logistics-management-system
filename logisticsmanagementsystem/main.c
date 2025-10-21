@@ -15,6 +15,7 @@ int vehicleCapacity[3] = {1000, 5000, 10000}; //kg
 int vehicleRate[3] = {30, 40, 80};  //LKR
 int vehicleSpeed[3] = {60, 50, 45}; //kmph
 float vehicleFuelEfficiency[3] = {12.0, 6.0, 4.0}; //kmpl
+int deliveryCount=0;
 
 void manageCities();
 void addCity();
@@ -23,9 +24,10 @@ void renameCity();
 void removeCity();
 void setDistance();
 void displayDistanceTable();
+int selectVehicle();
+void deliveryRequest();
 
-int main()
-{
+int main(){
     int choice=0;
 
     do{
@@ -169,7 +171,7 @@ void renameCity(){
     printf("Enter the index of the city you want to rename: ");
     scanf("%d",&idx);
 
-    if(idx<=0 || idx>cityCount){
+    if(idx<=0 || idx>cityCount+1){
         printf("Error: Invalid city index!\n");
         return;
     }
@@ -208,14 +210,13 @@ void removeCity(){
     }
 
     int idx=0;
-    char name[NAME_LENGTH];
 
     listCities();
 
     printf("Enter the index of the city you want to remove: ");
     scanf("%d",&idx);
 
-    if(idx<=0 || idx>cityCount){
+    if(idx<=0 || idx>cityCount+1){
         printf("Error: Invalid city index!\n");
         return;
     }
@@ -243,7 +244,7 @@ void setDistance(){
     printf("Enter city index (To): ");
     scanf("%d",&city2);
 
-    if (city1<=0 || city1>cityCount || city2<=0 || city2>cityCount) {
+    if (city1<=0 || city1>cityCount+1 || city2<=0 || city2>cityCount+1) {
         printf("Error: Invalid city index!\n");
         return;
     }
@@ -302,7 +303,7 @@ void displayDistanceTable(){
 
 }
 
-void selectVehicle(){
+int selectVehicle(){
 
     int choice0;
     printf("\n--- Select a Vehicle Type ---\n");
@@ -317,7 +318,7 @@ void selectVehicle(){
         printf("\n");
     }
     while(1){
-        printf("Enter vehicle type(1,2,3): ");
+        printf("Enter vehicle type(1=Van, 2=Truck, 3=Lorry): ");
         scanf("%d",&choice0);
         if(choice0>=1 && choice0<=3){
             return choice0-1;
@@ -328,5 +329,56 @@ void selectVehicle(){
     }
 
 }
+
+void deliveryRequest(){
+
+    if(deliveryCount>=MAX_DELIVERIES){
+        printf("Error: Maximum delivery limit reached. Cannot add a new request!\n");
+        return;
+    }
+
+    else if (cityCount < 2) {
+        printf("Error: You need at least 2 cities to make a delivery.\n");
+        return;
+    }
+
+    int weight,sourceIdx,destIdx;
+
+    listCities();
+
+    printf("Enter source city index: ");
+    scanf("%d", &sourceIdx);
+
+    printf("Enter destination city index: ");
+    scanf("%d", &destIdx);
+
+    if (sourceIdx <=0 || sourceIdx>cityCount+1 || destIdx<=0 || destIdx>cityCount+1) {
+        printf("Error: Invalid city index!\n");
+        return;
+    }
+
+    else if (sourceIdx == destIdx) {
+        printf("Error: Source and destination cities cannot be the same!\n");
+        return;
+    }
+
+
+    int vehicleIdx = selectVehicle();
+    printf("Enter delivery weight (kg): ");
+    scanf("%d",&weight);
+
+    if (weight <= 0) {
+        printf("Error: Weight must be a non zero positive number!\n");
+        return;
+    }
+
+    else if (weight > vehicleCapacity[vehicleIdx]) {
+        printf("Error: Weight exceeds the %s's capacity of %d kg.\n",vehicleTypes[vehicleIdx], vehicleCapacity[vehicleIdx]);
+        return;
+    }
+
+}
+
+
 
 
