@@ -10,6 +10,11 @@
 char cityNames[MAX_CITIES][NAME_LENGTH];
 int distance[MAX_CITIES][MAX_CITIES];
 int cityCount=0;
+char vehicleTypes[3][10] = {"Van", "Truck", "Lorry"};
+int vehicleCapacity[3] = {1000, 5000, 10000}; //kg
+int vehicleRate[3] = {30, 40, 80};  //LKR
+int vehicleSpeed[3] = {60, 50, 45}; //kmph
+float vehicleFuelEfficiency[3] = {12.0, 6.0, 4.0}; //kmpl
 
 void manageCities();
 void addCity();
@@ -17,6 +22,7 @@ void listCities();
 void renameCity();
 void removeCity();
 void setDistance();
+void displayDistanceTable();
 
 int main()
 {
@@ -264,6 +270,8 @@ void setDistance(){
 
 void displayDistanceTable(){
 
+
+
     if (cityCount == 0) {
         printf("Error: No cities added. Cannot display distance table!\n");
         return;
@@ -293,3 +301,32 @@ void displayDistanceTable(){
     }
 
 }
+
+void selectVehicle(){
+
+    int choice0;
+    printf("\n--- Select a Vehicle Type ---\n");
+
+    for (int i = 0; i < 3; i++) {
+        printf("  Type %d: %s  \n", (i + 1), vehicleTypes[i]);
+        printf("-----------------------\n");
+        printf("  Capacity: %d kg\n", vehicleCapacity[i]);
+        printf("  Rate    : %d LKR/km\n", vehicleRate[i]);
+        printf("  Speed   : %d km/h\n", vehicleSpeed[i]);
+        printf("-----------------------\n");
+        printf("\n");
+    }
+    while(1){
+        printf("Enter vehicle type(1,2,3): ");
+        scanf("%d",&choice0);
+        if(choice0>=1 && choice0<=3){
+            return choice0-1;
+        }
+        else{
+            printf("Error: Invalid choice. Please enter 1, 2 or 3.\n");
+        }
+    }
+
+}
+
+
