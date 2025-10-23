@@ -35,9 +35,14 @@ float fuelCost(float consumption);
 float totalOperationalCost(float deliveryCost, float fuelCost);
 float profit(float deliveryCost);
 float finalCharge(float totalCost, float profit);
+void initializeDistances();
+void leastDistanceRoute();
 
 int main(){
     int choice=0;
+
+    initializeDistances();
+    leastDistanceRoute();
 
     do{
 
@@ -274,7 +279,10 @@ void setDistance(){
     distance[city1-1][city2-1]= dis;
     distance[city2-1][city1-1]= dis;
 
-    printf("Distance updated successfully!");
+    printf("Distance updated successfully!\n");
+
+    leastDistanceRoute();
+    printf("Info: All least-cost routes have been re-calculated.\n");
 
 }
 
@@ -387,6 +395,50 @@ void deliveryRequest(){
         return;
     }
 
+    leastDistanceRoute();
+
+    int dist = leastDistance[sourceIdx-1][destIdx-1];
+
+    if(dist == INFINITY){
+        printf("Error: No valid route exists between these two cities.\n");
+        return;
+    }
+
+    //calculations
+    float d =(float)dist;
+    float w =(float)weight;
+    float r =(float)vehicleRate[vehicleIdx];
+    float s =(float)vehicleSpeed[vehicleIdx];
+    float e = vehicleFuelEfficiency[vehicleIdx];
+
+    float cost = deliveryCost(d, r, w);
+    float time = estimatedDeliveryTime(d, s);
+    float consumption = fuelConsumption(d, e);
+    float fCost = fuelCost(consumption);
+    float totalCost = totalOperationalCost(cost, fCost);
+    float prof = profit(cost);
+    float charge = finalCharge(totalCost, prof);
+
+    //displaying cost estimation to user
+    printf("\n======================================================\n");
+    printf("            DELIVERY COST ESTIMATION\n");
+    printf("------------------------------------------------------\n");
+    printf("  From: %s\n", cityNames[sourceIdx-1]);
+    printf("  To: %s\n", cityNames[destIdx-1]);
+    printf("  Minimum Distance: %d km\n", dist);
+    printf("  Vehicle: %s\n", vehicleTypes[vehicleIdx]);
+    printf("  Weight:  %d kg\n", weight);
+    printf("------------------------------------------------------\n");
+    printf("Base Cost: %d x %d x (1 + %d/10000) = %.2f LKR\n", dist, vehicleRate[vehicleIdx], weight, cost);
+    printf("Fuel Used: %.2f L\n", consumption);
+    printf("Fuel Cost: %.2f LKR\n", fCost);
+    printf("Operational Cost: %.2f LKR\n", totalCost);
+    printf("Profit: %.2f LKR\n", prof);
+    printf("Customer Charge: %.2f LKR\n", charge);
+    printf("Estimated Time: %.2f hours\n", time);
+    printf("======================================================\n");
+
+
 }
 
 //--Cost, Time, and Fuel Calculations--//
@@ -483,3 +535,5 @@ void leastDistanceRoute(){
         }
     }
 }
+
+
