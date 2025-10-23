@@ -37,6 +37,7 @@ float profit(float deliveryCost);
 float finalCharge(float totalCost, float profit);
 void initializeDistances();
 void leastDistanceRoute();
+void manageDistances();
 
 int main(){
     int choice=0;
@@ -66,11 +67,11 @@ int main(){
                 break;
 
             case 2:
-
+                manageDistances();
                 break;
 
             case 3:
-
+                deliveryRequest();
                 break;
 
             case 4:
@@ -536,4 +537,28 @@ void leastDistanceRoute(){
     }
 }
 
+void manageDistances() {
+    int choice2;
+    do {
+        printf("\n-- Distance Management --\n");
+        printf("1. Input/Edit Distance\n");
+        printf("2. Display Distance Table\n");
+        printf("3. Back to Main Menu\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice2);
+
+        switch (choice2) {
+            case 1:
+                setDistance();
+                break;
+            case 2:
+                displayDistanceTable();
+                break;
+            case 3:
+                break;
+            default:
+                printf("Error: Invalid Choice!\n");
+        }
+    } while (choice2 != 0);
+}
 
