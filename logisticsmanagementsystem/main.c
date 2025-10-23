@@ -6,6 +6,7 @@
 #define NAME_LENGTH 60
 #define FUEL_PRICE 310.0
 #define MAX_DELIVERIES 50
+#define INFINITY 999999
 
 char cityNames[MAX_CITIES][NAME_LENGTH];
 int distance[MAX_CITIES][MAX_CITIES];
@@ -16,6 +17,7 @@ int vehicleRate[3] = {30, 40, 80};  //LKR
 int vehicleSpeed[3] = {60, 50, 45}; //kmph
 float vehicleFuelEfficiency[3] = {12.0, 6.0, 4.0}; //kmpl
 int deliveryCount=0;
+int leastDistance[MAX_CITIES][MAX_CITIES];
 
 void manageCities();
 void addCity();
@@ -327,6 +329,7 @@ int selectVehicle(){
     while(1){
         printf("Enter vehicle type(1=Van, 2=Truck, 3=Lorry): ");
         scanf("%d",&choice0);
+
         if(choice0>=1 && choice0<=3){
             return choice0-1;
         }
@@ -422,4 +425,61 @@ float profit(float deliveryCost){
 
 float finalCharge(float totalCost, float profit){
     return totalCost+profit;
+}
+
+//finding least distance root by Floyd Warshall algorithm.
+
+void initializeDistances(){
+
+    for (int i=0; i<MAX_CITIES; i++) {
+        for (int j=0; j<MAX_CITIES; j++) {
+
+            if (i==j) {
+                distance[i][j]=0;
+            } else {
+                distance[i][j]=-1;
+            }
+        }
+    }
+}
+
+void leastDistanceRoute(){
+
+    for(int i=0; i<MAX_CITIES; i++){
+
+        for (int j = 0; j < MAX_CITIES; j++) {
+
+            if(i==j){
+                leastDistance[i][j]=0;
+            }
+            else if(distance[i][j]=-1){
+                leastDistance[i][j]=INFINITY; //INFINITY means no direct paths
+            }
+            else{
+                leastDistance[i][j]=distance[i][j];
+            }
+        }
+    }
+
+    // k = via city
+    // i = starting city
+    // j = destination city
+
+    for (int k=0; k<cityCount; k++){
+
+        for(int i=0; i<cityCount; i++){
+
+            for(int j=0; j<cityCount; j++){
+
+                if(leastDistance[i][k]==INFINITY || leastDistance[k][j]==INFINITY){
+                    continue;
+                }
+
+                if(leastDistance[i][k] + leastDistance[j][k] < leastDistance[i][j]){
+                    leastDistance[i][j]= leastDistance[i][k] + leastDistance[j][k];
+
+                }
+            }
+        }
+    }
 }
