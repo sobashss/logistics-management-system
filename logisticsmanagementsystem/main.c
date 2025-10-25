@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_CITIES 30
 #define NAME_LENGTH 60
@@ -45,12 +46,14 @@ void initializeDistances();
 void leastDistanceRoute();
 void manageDistances();
 void showReports();
+void saveData();
+void loadData();
 
 int main(){
     int choice=0;
 
     initializeDistances();
-    leastDistanceRoute();
+    loadData();
 
     do{
 
@@ -82,10 +85,11 @@ int main(){
                 break;
 
             case 4:
-
+                showReports();
                 break;
 
             case 5:
+                saveData();
                 printf("Exiting...\n");
                 break;
 
@@ -638,3 +642,99 @@ void showReports() {
     printf("=============================================\n");
 
 }
+
+void saveData(){
+
+    FILE *fRoutes, *fDeliveries;
+
+    //saving routes file
+    fRoutes= fopen("routes.txt", "w");
+
+    if (fRoutes == NULL) {
+        printf("Error: Could not save data to routes.txt\n");
+        return;
+    }
+
+    fprintf(fRoutes,"City Count: %d\n", cityCount);
+
+    for (int i = 0; i<cityCount; i++) {
+        fprintf(fRoutes,"%d. %s\n", i+1,cityNames[i]);
+    }
+
+    for (int i = 0; i<cityCount; i++) {
+
+        for (int j = 0; j<cityCount; j++) {
+            fprintf(fRoutes, "%d ", distance[i][j]);
+        }
+        fprintf(fRoutes, "\n");
+    }
+
+    fclose(fRoutes);
+
+    //saving deliveries file
+
+    fDeliveries = fopen("deliveries.txt", "w");
+
+    if (fDeliveries == NULL) {
+        printf("Error: Could not save data to deliveries.txt\n");
+        return;
+    }
+
+    fprintf(fDeliveries, "%d\n", deliveryCount);
+
+    for (int i = 0; i<deliveryCount; i++) {
+        fprintf(fDeliveries, "%d %d %d %f %f %f\n",deliverySource[i],deliveryDest[i],deliveryDistance[i],deliveryTime[i],deliveryRevenue[i],deliveryProfit[i]);
+    }
+
+    fclose(fDeliveries);
+
+    printf("All data saved successfully to routes.txt and deliveries.txt\n");
+
+}
+
+void loadData() {
+
+    FILE *fRoutes, *fDeliveries;
+    //loading roots
+    fRoutes = fopen("routes.txt", "r");
+    if (fRoutes == NULL) {
+        printf("Info: routes.txt not found. Starting with empty data.\n");
+        initializeDistances();
+        return;
+    }
+
+    fscanf(fRoutes, "%d\n", &cityCount);
+
+    for (int i = 0; i<cityCount; i++) {
+        fscanf(fRoutes, "%s\n", cityNames[i]);
+    }
+
+    for (int i=0; i<cityCount; i++) {
+        for (int j=0; j<cityCount; j++) {
+            fscanf(fRoutes, "%d", &distance[i][j]);
+        }
+    }
+
+    fclose(fRoutes);
+    //loading deliveries
+    fDeliveries = fopen("deliveries.txt", "r");
+
+    if (fDeliveries == NULL) {
+        printf("Info: deliveries.txt not found. Starting with 0 deliveries.\n");
+        return;
+    }
+
+    fscanf(fDeliveries, "%d\n", &deliveryCount);
+
+    for (int i=0; i<deliveryCount; i++) {
+        fscanf(fDeliveries, "%d %d %d %f %f %f\n",&deliverySource[i],&deliveryDest[i],&deliveryDistance[i],&deliveryTime[i],&deliveryRevenue[i],&deliveryProfit[i]);
+    }
+
+    fclose(fDeliveries);
+
+    printf("Data loaded successfully!\n");
+
+    leastDistanceRoute();
+}
+
+
