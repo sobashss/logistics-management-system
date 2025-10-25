@@ -18,6 +18,12 @@ int vehicleSpeed[3] = {60, 50, 45}; //kmph
 float vehicleFuelEfficiency[3] = {12.0, 6.0, 4.0}; //kmpl
 int deliveryCount=0;
 int leastDistance[MAX_CITIES][MAX_CITIES];
+int deliverySource[MAX_DELIVERIES];
+int deliveryDest[MAX_DELIVERIES];
+float deliveryDistance[MAX_DELIVERIES];
+float deliveryTime[MAX_DELIVERIES];
+float deliveryRevenue[MAX_DELIVERIES];
+float deliveryProfit[MAX_DELIVERIES];
 
 void manageCities();
 void addCity();
@@ -439,6 +445,30 @@ void deliveryRequest(){
     printf("Estimated Time: %.2f hours\n", time);
     printf("======================================================\n");
 
+    char answer;
+    printf("Do you want to continue ? (yes= y/ no= n)");
+    scanf("%c",&answer);
+
+    if(strcmp(answer,"y")==0){
+
+        deliverySource[deliveryCount] = sourceIdx-1;
+        deliveryDest[deliveryCount] = destIdx-1;
+        deliveryDistance[deliveryCount] = dist;
+        deliveryTime[deliveryCount] = time;
+        deliveryRevenue[deliveryCount] = charge;
+        deliveryProfit[deliveryCount] = prof;
+
+        deliveryCount++;
+
+        printf("Delivery recorded successfully! Total deliveries: %d\n", deliveryCount);
+        return;
+    }
+
+    if(strcmp(answer,"n")==0){
+
+        printf("Delivery Terminated. Thank You!\n");
+        return;
+    }
 
 }
 
@@ -538,7 +568,9 @@ void leastDistanceRoute(){
 }
 
 void manageDistances() {
+
     int choice2;
+
     do {
         printf("\n-- Distance Management --\n");
         printf("1. Input/Edit Distance\n");
@@ -559,6 +591,6 @@ void manageDistances() {
             default:
                 printf("Error: Invalid Choice!\n");
         }
-    } while (choice2 != 0);
+    } while (choice2 != 3);
 }
 
