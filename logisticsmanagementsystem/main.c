@@ -7,7 +7,7 @@
 #define NAME_LENGTH 60
 #define FUEL_PRICE 310.0
 #define MAX_DELIVERIES 50
-#define INFINITY 999999
+#define INF 999999
 
 char cityNames[MAX_CITIES][NAME_LENGTH];
 int distance[MAX_CITIES][MAX_CITIES];
@@ -25,6 +25,7 @@ int deliveryDistance[MAX_DELIVERIES];
 float deliveryTime[MAX_DELIVERIES];
 float deliveryRevenue[MAX_DELIVERIES];
 float deliveryProfit[MAX_DELIVERIES];
+char deliveryDate[MAX_DELIVERIES][20];
 
 void manageCities();
 void addCity();
@@ -411,7 +412,7 @@ void deliveryRequest(){
 
     int dist = leastDistance[sourceIdx-1][destIdx-1];
 
-    if(dist == INFINITY){
+    if(dist == INF){
         printf("Error: No valid route exists between these two cities.\n");
         return;
     }
@@ -424,7 +425,7 @@ void deliveryRequest(){
     float e = vehicleFuelEfficiency[vehicleIdx];
 
     float cost = deliveryCost(d, r, w);
-    float time = estimatedDeliveryTime(d, s);
+    float dtime = estimatedDeliveryTime(d, s);
     float consumption = fuelConsumption(d, e);
     float fCost = fuelCost(consumption);
     float totalCost = totalOperationalCost(cost, fCost);
@@ -447,26 +448,31 @@ void deliveryRequest(){
     printf("Operational Cost: %.2f LKR\n", totalCost);
     printf("Profit: %.2f LKR\n", prof);
     printf("Customer Charge: %.2f LKR\n", charge);
-    printf("Estimated Time: %.2f hours\n", time);
+    printf("Estimated Time: %.2f hours\n", dtime);
     printf("======================================================\n");
 
     char answer;
     printf("Do you want to continue ? (yes= y/ no= n)");
-    scanf(" %c",&answer);
+    scanf(" %s",&answer);
 
 
     if(strcmp(answer,"y")==0){
+        //recording date and time of the delivery request
+        time_t t = time(NULL);
+        struct tm* tm = localtime(&t);
+        strftime(deliveryDate[deliveryCount], 20, "%Y-%m-%d_%H:%M", tm);
 
         deliverySource[deliveryCount] = sourceIdx-1;
         deliveryDest[deliveryCount] = destIdx-1;
         deliveryDistance[deliveryCount] = dist;
-        deliveryTime[deliveryCount] = time;
+        deliveryTime[deliveryCount] = dtime;
         deliveryRevenue[deliveryCount] = charge;
         deliveryProfit[deliveryCount] = prof;
 
         deliveryCount++;
 
         printf("Delivery recorded successfully! Total deliveries: %d\n", deliveryCount);
+        printf("Date Recorded: %s\n", deliveryDate[deliveryCount - 1]);
         return;
     }
 
@@ -542,7 +548,7 @@ void leastDistanceRoute(){
                 leastDistance[i][j]=0;
             }
             else if(distance[i][j]==-1){
-                leastDistance[i][j]=INFINITY; //INFINITY means no direct paths
+                leastDistance[i][j]=INF; //INF means no direct paths
             }
             else{
                 leastDistance[i][j]=distance[i][j];
@@ -560,12 +566,12 @@ void leastDistanceRoute(){
 
             for(int j=0; j<cityCount; j++){
 
-                if(leastDistance[i][k]==INFINITY || leastDistance[k][j]==INFINITY){
+                if(leastDistance[i][k]==INF || leastDistance[k][j]==INF){
                     continue;
                 }
 
                 if(leastDistance[i][k] + leastDistance[k][j] < leastDistance[i][j]){
-                    leastDistance[i][j]= leastDistance[i][k] + leastDistance[j][k];
+                    leastDistance[i][j]= leastDistance[i][k] + leastDistance[k][j];
 
                 }
             }
@@ -612,7 +618,7 @@ void showReports() {
     float totalRevenue = 0;
     float totalProfit = 0;
     int longestRoute = 0;
-    int shortestRoute = INFINITY;
+    int shortestRoute = INF;
 
     for (int i = 0; i < deliveryCount; i++) {
         totalDist += deliveryDistance[i];
@@ -659,7 +665,7 @@ void saveData(){
     fprintf(fRoutes,"%d\n", cityCount);
 
     for (int i = 0; i<cityCount; i++) {
-        fprintf(fRoutes,"%d. %s\n", i+1,cityNames[i]);
+        fprintf(fRoutes," %s\n", cityNames[i]);
     }
 
     for (int i = 0; i<cityCount; i++) {
@@ -684,7 +690,7 @@ void saveData(){
     fprintf(fDeliveries, "%d\n", deliveryCount);
 
     for (int i = 0; i<deliveryCount; i++) {
-        fprintf(fDeliveries, "%d %d %d %f %f %f\n",deliverySource[i],deliveryDest[i],deliveryDistance[i],deliveryTime[i],deliveryRevenue[i],deliveryProfit[i]);
+        fprintf(fDeliveries, "%d %d %d %f %f %f %s\n",deliverySource[i],deliveryDest[i],deliveryDistance[i],deliveryTime[i],deliveryRevenue[i],deliveryProfit[i],deliveryDate[i]);
     }
 
     fclose(fDeliveries);
@@ -728,7 +734,7 @@ void loadData() {
     fscanf(fDeliveries, "%d\n", &deliveryCount);
 
     for (int i=0; i<deliveryCount; i++) {
-        fscanf(fDeliveries, "%d %d %d %f %f %f\n",&deliverySource[i],&deliveryDest[i],&deliveryDistance[i],&deliveryTime[i],&deliveryRevenue[i],&deliveryProfit[i]);
+        fscanf(fDeliveries, "%d %d %d %f %f %f %s\n",&deliverySource[i],&deliveryDest[i],&deliveryDistance[i],&deliveryTime[i],&deliveryRevenue[i],&deliveryProfit[i],&deliveryDate[i]);
     }
 
     fclose(fDeliveries);
