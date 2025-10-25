@@ -21,7 +21,7 @@ int deliveryCount=0;
 int leastDistance[MAX_CITIES][MAX_CITIES];
 int deliverySource[MAX_DELIVERIES];
 int deliveryDest[MAX_DELIVERIES];
-float deliveryDistance[MAX_DELIVERIES];
+int deliveryDistance[MAX_DELIVERIES];
 float deliveryTime[MAX_DELIVERIES];
 float deliveryRevenue[MAX_DELIVERIES];
 float deliveryProfit[MAX_DELIVERIES];
@@ -151,7 +151,7 @@ void addCity(){
     }
 
     printf("Enter Name of the City: ");
-    scanf("%s",newcityname);
+    scanf(" %s",newcityname);
 
     if(newcityname[0] == '\0'){
         printf("Error: Name cannot be empty.\n");
@@ -452,7 +452,8 @@ void deliveryRequest(){
 
     char answer;
     printf("Do you want to continue ? (yes= y/ no= n)");
-    scanf("%c",&answer);
+    scanf(" %c",&answer);
+
 
     if(strcmp(answer,"y")==0){
 
@@ -540,7 +541,7 @@ void leastDistanceRoute(){
             if(i==j){
                 leastDistance[i][j]=0;
             }
-            else if(distance[i][j]=-1){
+            else if(distance[i][j]==-1){
                 leastDistance[i][j]=INFINITY; //INFINITY means no direct paths
             }
             else{
@@ -563,7 +564,7 @@ void leastDistanceRoute(){
                     continue;
                 }
 
-                if(leastDistance[i][k] + leastDistance[j][k] < leastDistance[i][j]){
+                if(leastDistance[i][k] + leastDistance[k][j] < leastDistance[i][j]){
                     leastDistance[i][j]= leastDistance[i][k] + leastDistance[j][k];
 
                 }
@@ -655,7 +656,7 @@ void saveData(){
         return;
     }
 
-    fprintf(fRoutes,"City Count: %d\n", cityCount);
+    fprintf(fRoutes,"%d\n", cityCount);
 
     for (int i = 0; i<cityCount; i++) {
         fprintf(fRoutes,"%d. %s\n", i+1,cityNames[i]);
