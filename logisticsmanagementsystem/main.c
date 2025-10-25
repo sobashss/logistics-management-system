@@ -44,6 +44,7 @@ float finalCharge(float totalCost, float profit);
 void initializeDistances();
 void leastDistanceRoute();
 void manageDistances();
+void showReports();
 
 int main(){
     int choice=0;
@@ -594,3 +595,46 @@ void manageDistances() {
     } while (choice2 != 3);
 }
 
+void showReports() {
+
+    if (deliveryCount == 0) {
+        printf("No deliveries completed yet!\n");
+        return;
+    }
+
+    float totalDist = 0;
+    float totalTime = 0;
+    float totalRevenue = 0;
+    float totalProfit = 0;
+    int longestRoute = 0;
+    int shortestRoute = INFINITY;
+
+    for (int i = 0; i < deliveryCount; i++) {
+        totalDist += deliveryDistance[i];
+        totalTime += deliveryTime[i];
+        totalRevenue += deliveryRevenue[i];
+        totalProfit += deliveryProfit[i];
+
+
+        if (deliveryDistance[i] > longestRoute) {
+            longestRoute = deliveryDistance[i];
+        }
+
+        if (deliveryDistance[i] < shortestRoute) {
+            shortestRoute = deliveryDistance[i];
+        }
+    }
+
+    printf("============================================\n");
+    printf("             Performance Report\n");
+    printf("============================================\n");
+    printf("a. Total Deliveries Completed: %d\n", deliveryCount);
+    printf("b. Total Distance Covered:     %.2f km\n", totalDist);
+    printf("c. Average Delivery Time:      %.2f hours\n", totalTime / deliveryCount);
+    printf("d. Total Revenue:              LKR %.2f\n", totalRevenue);
+    printf("d. Total Profit:               LKR %.2f\n", totalProfit);
+    printf("e. Longest Route Completed:    %d km\n", longestRoute);
+    printf("e. Shortest Route Completed:   %d km\n", shortestRoute);
+    printf("=============================================\n");
+
+}
