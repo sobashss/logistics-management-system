@@ -52,8 +52,6 @@ void loadData();
 
 int main(){
     int choice=0;
-
-    initializeDistances();
     loadData();
 
     do{
@@ -198,7 +196,7 @@ void renameCity(){
     printf("Enter the index of the city you want to rename: ");
     scanf("%d",&idx);
 
-    if(idx<=0 || idx>cityCount+1){
+    if(idx<=0 || idx>cityCount){
         printf("Error: Invalid city index!\n");
         return;
     }
@@ -243,16 +241,35 @@ void removeCity(){
     printf("Enter the index of the city you want to remove: ");
     scanf("%d",&idx);
 
-    if(idx<=0 || idx>cityCount+1){
+    if(idx<=0 || idx>cityCount){
         printf("Error: Invalid city index!\n");
         return;
     }
-
+    //removing city from cityNames array
     for(int i=idx-1; i<cityCount-1;i++){
         strcpy(cityNames[i],cityNames[i+1]);
     }
+
+    //removing distances related to that city from distance array
+    for (int i=idx-1; i<cityCount-1; i++) {
+
+        for (int j=0; j<cityCount;j++) {
+            distance[i][j] = distance[i + 1][j];
+        }
+    }
+
+    for (int j=idx-1; j<cityCount-1; j++) {
+
+        for (int i=0; i<cityCount; i++) {
+            distance[i][j] = distance[i][j + 1];
+        }
+    }
+
     cityCount--;
+
     printf("City Removed Successfully!\n");
+
+    leastDistanceRoute();
 
 }
 
@@ -271,7 +288,7 @@ void setDistance(){
     printf("Enter city index (To): ");
     scanf("%d",&city2);
 
-    if (city1<=0 || city1>cityCount+1 || city2<=0 || city2>cityCount+1) {
+    if (city1<=0 || city1>cityCount || city2<=0 || city2>cityCount) {
         printf("Error: Invalid city index!\n");
         return;
     }
@@ -452,34 +469,45 @@ void deliveryRequest(){
     printf("======================================================\n");
 
     char answer;
-    printf("Do you want to continue ? (yes= y/ no= n)");
-    scanf(" %s",&answer);
 
 
-    if(strcmp(answer,"y")==0){
-        //recording date and time of the delivery request
-        time_t t = time(NULL);
-        struct tm* tm = localtime(&t);
-        strftime(deliveryDate[deliveryCount], 20, "%Y-%m-%d_%H:%M", tm);
+    while(1){
+        printf("Do you want to confirm delivery? (yes= y/ no= n)");
+        scanf(" %c",&answer);
 
-        deliverySource[deliveryCount] = sourceIdx-1;
-        deliveryDest[deliveryCount] = destIdx-1;
-        deliveryDistance[deliveryCount] = dist;
-        deliveryTime[deliveryCount] = dtime;
-        deliveryRevenue[deliveryCount] = charge;
-        deliveryProfit[deliveryCount] = prof;
+        if(answer=='y'|| answer=='Y'){
 
-        deliveryCount++;
+            //recording date and time of the delivery request
+            time_t t = time(NULL);
+            struct tm* tm = localtime(&t);
+            strftime(deliveryDate[deliveryCount], 20, "%Y-%m-%d_%H:%M", tm);
 
-        printf("Delivery recorded successfully! Total deliveries: %d\n", deliveryCount);
-        printf("Date Recorded: %s\n", deliveryDate[deliveryCount - 1]);
-        return;
-    }
+            deliverySource[deliveryCount] = sourceIdx-1;
+            deliveryDest[deliveryCount] = destIdx-1;
+            deliveryDistance[deliveryCount] = dist;
+            deliveryTime[deliveryCount] = dtime;
+            deliveryRevenue[deliveryCount] = charge;
+            deliveryProfit[deliveryCount] = prof;
 
-    if(strcmp(answer,"n")==0){
+            deliveryCount++;
 
-        printf("Delivery Terminated. Thank You!\n");
-        return;
+            printf("Delivery recorded successfully! Total deliveries: %d\n", deliveryCount);
+            printf("Date Recorded: %s\n", deliveryDate[deliveryCount - 1]);
+
+            break;
+        }
+
+        else if(answer=='n' || answer=='n'){
+
+            printf("Delivery cancelled. Thank You!\n");
+
+            break;
+        }
+
+        else{
+            printf("Error: Invalid answer. Please enter 'y' or 'n'.\n");
+        }
+
     }
 
 }
@@ -540,9 +568,9 @@ void initializeDistances(){
 
 void leastDistanceRoute(){
 
-    for(int i=0; i<MAX_CITIES; i++){
+    for(int i=0; i<cityCount; i++){
 
-        for (int j = 0; j < MAX_CITIES; j++) {
+        for (int j=0; j<cityCount; j++) {
 
             if(i==j){
                 leastDistance[i][j]=0;
@@ -734,7 +762,7 @@ void loadData() {
     fscanf(fDeliveries, "%d\n", &deliveryCount);
 
     for (int i=0; i<deliveryCount; i++) {
-        fscanf(fDeliveries, "%d %d %d %f %f %f %s\n",&deliverySource[i],&deliveryDest[i],&deliveryDistance[i],&deliveryTime[i],&deliveryRevenue[i],&deliveryProfit[i],&deliveryDate[i]);
+        fscanf(fDeliveries, "%d %d %d %f %f %f %s\n",&deliverySource[i],&deliveryDest[i],&deliveryDistance[i],&deliveryTime[i],&deliveryRevenue[i],&deliveryProfit[i],deliveryDate[i]);
     }
 
     fclose(fDeliveries);
