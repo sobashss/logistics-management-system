@@ -49,6 +49,7 @@ void manageDistances();
 void showReports();
 void saveData();
 void loadData();
+int getSafeInput();
 
 int main(){
     int choice=0;
@@ -68,7 +69,7 @@ int main(){
         printf("5.Exit\n");
         printf("-----------------------------------\n");
         printf("Please Enter Your Choice (1-5): ");
-        scanf("%d",&choice);
+        choice = getSafeInput();
         printf("-----------------------------------\n");
 
         switch (choice){
@@ -116,7 +117,7 @@ void manageCities(){
         printf("3.Rename a City\n");
         printf("4.Back to Main Menu\n");
         printf("Enter your Choice: ");
-        scanf("%d",&choice1);
+        choice1= getSafeInput();
 
         switch (choice1){
 
@@ -208,7 +209,7 @@ void renameCity(){
     listCities();
 
     printf("Enter the index of the city you want to rename: ");
-    scanf("%d",&idx);
+    idx = getSafeInput();
 
     if(idx<=0 || idx>cityCount){
         printf("Error: Invalid city index!\n");
@@ -253,7 +254,7 @@ void removeCity(){
     listCities();
 
     printf("Enter the index of the city you want to remove: ");
-    scanf("%d",&idx);
+    idx = getSafeInput();
 
     if(idx<=0 || idx>cityCount){
         printf("Error: Invalid city index!\n");
@@ -297,10 +298,10 @@ void setDistance(){
     listCities();
 
     printf("Enter city index (From): ");
-    scanf("%d",&city1);
+    city1 = getSafeInput();
 
     printf("Enter city index (To): ");
-    scanf("%d",&city2);
+    city2 = getSafeInput();
 
     if (city1<=0 || city1>cityCount || city2<=0 || city2>cityCount) {
         printf("Error: Invalid city index!\n");
@@ -313,7 +314,7 @@ void setDistance(){
     }
 
     printf("Enter the distance between %s and %s (in km): ", cityNames[city1-1], cityNames[city2-1]);
-    scanf("%d",&dis);
+    dis = getSafeInput();
 
     if (dis <= 0) {
         printf("Error: Distance must be a positive non zero value!\n");
@@ -415,7 +416,7 @@ int selectVehicle(){
     }
     while(1){
         printf("Enter vehicle type(1=Van, 2=Truck, 3=Lorry): ");
-        scanf("%d",&choice0);
+        choice0 = getSafeInput();
 
         if(choice0>=1 && choice0<=3){
             return choice0-1;
@@ -444,10 +445,10 @@ void deliveryRequest(){
     listCities();
 
     printf("Enter source city index: ");
-    scanf("%d", &sourceIdx);
+    sourceIdx = getSafeInput();
 
     printf("Enter destination city index: ");
-    scanf("%d", &destIdx);
+    destIdx = getSafeInput();
 
     if (sourceIdx <=0 || sourceIdx>cityCount || destIdx<=0 || destIdx>cityCount) {
         printf("Error: Invalid city index!\n");
@@ -462,7 +463,7 @@ void deliveryRequest(){
 
     int vehicleIdx = selectVehicle();
     printf("Enter delivery weight (kg): ");
-    scanf("%d",&weight);
+    weight= getSafeInput();
 
     if (weight <= 0) {
         printf("Error: Weight must be a non zero positive number!\n");
@@ -666,7 +667,7 @@ void manageDistances() {
         printf("2. Display Distance Table\n");
         printf("3. Back to Main Menu\n");
         printf("Enter choice: ");
-        scanf("%d", &choice2);
+        choice2 = getSafeInput();
 
         switch (choice2) {
             case 1:
@@ -822,4 +823,28 @@ void loadData() {
     leastDistanceRoute();
 }
 
+//to avoid infinite loops
+int getSafeInput() {
+
+    int input;
+    int result;
+
+    while (1) {
+
+        result = scanf("%d", &input);
+
+        if (result==1) {
+
+            while (getchar() != '\n');
+            return input;
+        }
+        else if (result==0) {
+
+            printf("Error: Invalid input. Please enter a number! ");
+
+            while (getchar() != '\n');
+
+        }
+    }
+}
 
