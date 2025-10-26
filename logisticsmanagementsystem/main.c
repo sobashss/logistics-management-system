@@ -59,18 +59,18 @@ int main(){
 
     do{
 
-        printf("===================================\n");
-        printf("    Logistics Management System\n");
-        printf("===================================\n");
+        printf("======================================================\n");
+        printf("             Logistics Management System\n");
+        printf("======================================================\n");
         printf("1.Manage Cities\n");
         printf("2.Manage Distances\n");
         printf("3.New Delivery Requests\n");
         printf("4.View Performance Reports\n");
         printf("5.Exit\n");
-        printf("-----------------------------------\n");
+        printf("------------------------------------------------------\n");
         printf("Please Enter Your Choice (1-5): ");
         choice = getSafeInput();
-        printf("-----------------------------------\n");
+        printf("======================================================\n");
 
         switch (choice){
 
@@ -116,8 +116,10 @@ void manageCities(){
         printf("2.Remove a City\n");
         printf("3.Rename a City\n");
         printf("4.Back to Main Menu\n");
+        printf("-----------------------------------\n");
         printf("Enter your Choice: ");
         choice1= getSafeInput();
+        printf("-----------------------------------\n");
 
         switch (choice1){
 
@@ -153,7 +155,9 @@ void addCity(){
     }
 
     printf("Enter Name of the City: ");
-    scanf(" %s",newcityname);
+
+    fgets(newcityname, NAME_LENGTH, stdin);
+    newcityname[strcspn(newcityname, "\n")] = '\0';
 
     if(newcityname[0] == '\0'){
         printf("Error: Name cannot be empty.\n");
@@ -217,13 +221,14 @@ void renameCity(){
     }
 
     printf("Enter New Name: ");
-    scanf("%s",name);
+
+    fgets(name, NAME_LENGTH, stdin);
+    name[strcspn(name, "\n")] = '\0';
 
 
     if (name[0] == '\0') {
         printf("Error: Name cannot be empty!\n");
         return;
-
     }
 
     for(int i=0; i<cityCount; i++){
@@ -236,10 +241,6 @@ void renameCity(){
     strncpy(cityNames[idx-1],name,NAME_LENGTH);
     cityNames[idx - 1][NAME_LENGTH - 1] = '\0';
     printf("Rename Successful!\n");
-
-
-
-
 }
 
 void removeCity(){
