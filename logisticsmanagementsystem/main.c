@@ -52,6 +52,8 @@ void loadData();
 
 int main(){
     int choice=0;
+
+    initializeDistances();
     loadData();
 
     do{
@@ -166,7 +168,19 @@ void addCity(){
 
         strncpy(cityNames[cityCount], newcityname, NAME_LENGTH);
         cityNames[cityCount][NAME_LENGTH - 1] = '\0';
+
+        //initializing distances for new city
+        int newIdx = cityCount;
+
+        for (int i = 0; i < MAX_CITIES; i++) {
+            distance[newIdx][i] = -1;
+            distance[i][newIdx] = -1;
+        }
+
+        distance[newIdx][newIdx] = 0;
+
         cityCount++;
+
         printf("New City added successfully!\n");
 
 }
@@ -325,28 +339,63 @@ void displayDistanceTable(){
         return;
     }
 
-    printf("\n--- Distance Table (km) ---\n");
-    printf("        ");
+
+//finding the longest city name
+    int longestName = 0;
+
+    for (int i=0; i<cityCount; i++) {
+        int len=strlen(cityNames[i]);
+
+        if (len>longestName) {
+            longestName=len;
+        }
+    }
+
+    int headerWidth = longestName + 5;
+
+    int dataWidth = 7;
+
+    printf("\n----- Distance Table (km) -----\n");
+
+    //printing column headers
+    printf("%-*s |", headerWidth, " ");
+
     for (int i = 0; i < cityCount; i++) {
-        printf("%s | ", cityNames[i]);
+
+        printf(" [%-*d] ", dataWidth - 3, i + 1);
     }
     printf("\n");
 
-
-    printf("-------");
+    //printing line to separate
+    for(int i = 0; i < headerWidth; i++) printf("-");
+    printf("-+-");
     for (int i = 0; i < cityCount; i++) {
-        printf("-------");
+        for(int j = 0; j < dataWidth; j++) printf("-");
     }
     printf("\n");
 
+    //printing rows
     for (int i = 0; i < cityCount; i++) {
-        printf("%s |",cityNames[i]);
 
+        char rowHeader[NAME_LENGTH + 5];
+        sprintf(rowHeader, "[%d] %s", i + 1, cityNames[i]);
+
+        // printing header
+        printf("%-*s |", headerWidth, rowHeader);
+
+        // printing actual distances for that row
         for (int j = 0; j < cityCount; j++) {
-            printf("  %d   |", distance[i][j]); //
+            if (distance[i][j] == -1) {
+
+                printf(" %-*s", dataWidth - 1, "N/A");
+            } else {
+
+                printf(" %-*d", dataWidth - 1, distance[i][j]);
+            }
         }
         printf("\n");
     }
+    printf("\n");
 
 }
 
@@ -400,7 +449,7 @@ void deliveryRequest(){
     printf("Enter destination city index: ");
     scanf("%d", &destIdx);
 
-    if (sourceIdx <=0 || sourceIdx>cityCount+1 || destIdx<=0 || destIdx>cityCount+1) {
+    if (sourceIdx <=0 || sourceIdx>cityCount || destIdx<=0 || destIdx>cityCount) {
         printf("Error: Invalid city index!\n");
         return;
     }
@@ -497,7 +546,7 @@ void deliveryRequest(){
             break;
         }
 
-        else if(answer=='n' || answer=='n'){
+        else if(answer=='n' || answer=='N'){
 
             printf("Delivery cancelled. Thank You!\n");
 
@@ -732,6 +781,7 @@ void loadData() {
     FILE *fRoutes, *fDeliveries;
     //loading roots
     fRoutes = fopen("routes.txt", "r");
+
     if (fRoutes == NULL) {
         printf("Info: routes.txt not found. Starting with empty data.\n");
         initializeDistances();
