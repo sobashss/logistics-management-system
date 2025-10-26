@@ -50,6 +50,8 @@ void showReports();
 void saveData();
 void loadData();
 int getSafeInput();
+void clearScreen();
+void pauseProgram();
 
 int main(){
     int choice=0;
@@ -58,6 +60,7 @@ int main(){
     loadData();
 
     do{
+        clearScreen();
 
         printf("======================================================\n");
         printf("             Logistics Management System\n");
@@ -97,6 +100,8 @@ int main(){
 
             default :
                 printf("Error: Invalid Choice!\n");
+                pauseProgram();
+
                 break;
 
         }
@@ -112,14 +117,16 @@ void manageCities(){
     int choice1=0;
 
     do{
+        clearScreen();
+        printf("\n------------------ City Management -------------------\n");
         printf("1.Add a New City\n");
         printf("2.Remove a City\n");
         printf("3.Rename a City\n");
         printf("4.Back to Main Menu\n");
-        printf("-----------------------------------\n");
+        printf("------------------------------------------------------\n");
         printf("Enter your Choice: ");
         choice1= getSafeInput();
-        printf("-----------------------------------\n");
+        printf("------------------------------------------------------\n");
 
         switch (choice1){
 
@@ -136,6 +143,7 @@ void manageCities(){
                 break;
             default :
                 printf("Error: Invalid Choice!\n");
+                pauseProgram();
                 break;
 
        }
@@ -151,6 +159,7 @@ void addCity(){
 
     if(cityCount>=MAX_CITIES){
         printf("Error: Maximum number of cities exceeded.\n");
+        pauseProgram();
         return;
     }
 
@@ -161,12 +170,14 @@ void addCity(){
 
     if(newcityname[0] == '\0'){
         printf("Error: Name cannot be empty.\n");
+        pauseProgram();
         return;
     }
 
     for(int i=0;i<cityCount;i++){
         if(strcmp(cityNames[i],newcityname) == 0){
             printf("Error: The city already exists.\n");
+            pauseProgram();
             return;
         }
     }
@@ -187,6 +198,7 @@ void addCity(){
         cityCount++;
 
         printf("New City added successfully!\n");
+        pauseProgram();
 
 }
 
@@ -204,6 +216,7 @@ void listCities(){
 void renameCity(){
     if(cityCount==0){
         printf("Error: No cities available!\n");
+        pauseProgram();
         return;
     }
 
@@ -217,6 +230,7 @@ void renameCity(){
 
     if(idx<=0 || idx>cityCount){
         printf("Error: Invalid city index!\n");
+        pauseProgram();
         return;
     }
 
@@ -228,12 +242,14 @@ void renameCity(){
 
     if (name[0] == '\0') {
         printf("Error: Name cannot be empty!\n");
+        pauseProgram();
         return;
     }
 
     for(int i=0; i<cityCount; i++){
         if(i!=(idx-1) && strcmp(cityNames[i],name)==0){
             printf("\"%s\" city already exists.\n",name);
+            pauseProgram();
             return;
         }
     }
@@ -241,12 +257,14 @@ void renameCity(){
     strncpy(cityNames[idx-1],name,NAME_LENGTH);
     cityNames[idx - 1][NAME_LENGTH - 1] = '\0';
     printf("Rename Successful!\n");
+    pauseProgram();
 }
 
 void removeCity(){
 
     if(cityCount==0){
         printf("Error: No cities available!\n");
+        pauseProgram();
         return;
     }
 
@@ -259,6 +277,7 @@ void removeCity(){
 
     if(idx<=0 || idx>cityCount){
         printf("Error: Invalid city index!\n");
+        pauseProgram();
         return;
     }
     //removing city from cityNames array
@@ -284,6 +303,7 @@ void removeCity(){
     cityCount--;
 
     printf("City Removed Successfully!\n");
+    pauseProgram();
 
     leastDistanceRoute();
 
@@ -293,6 +313,7 @@ void setDistance(){
     int city1, city2, dis;
     if(cityCount<2){
         printf("Error: Need at least two cities!\n");
+        pauseProgram();
         return;
     }
 
@@ -306,11 +327,13 @@ void setDistance(){
 
     if (city1<=0 || city1>cityCount || city2<=0 || city2>cityCount) {
         printf("Error: Invalid city index!\n");
+        pauseProgram();
         return;
     }
 
     if (city1 == city2) {
         printf("Distance from a city to itself is always zero!\n");
+        pauseProgram();
         return;
     }
 
@@ -319,6 +342,7 @@ void setDistance(){
 
     if (dis <= 0) {
         printf("Error: Distance must be a positive non zero value!\n");
+        pauseProgram();
         return;
     }
 
@@ -329,15 +353,17 @@ void setDistance(){
 
     leastDistanceRoute();
     printf("Info: All least-cost routes have been re-calculated.\n");
+    pauseProgram();
 
 }
 
 void displayDistanceTable(){
 
-
+    clearScreen();
 
     if (cityCount == 0) {
         printf("Error: No cities added. Cannot display distance table!\n");
+        pauseProgram();
         return;
     }
 
@@ -399,10 +425,13 @@ void displayDistanceTable(){
     }
     printf("\n");
 
+    pauseProgram();
+
 }
 
 int selectVehicle(){
 
+    clearScreen();
     int choice0;
     printf("\n--- Select a Vehicle Type ---\n");
 
@@ -424,6 +453,7 @@ int selectVehicle(){
         }
         else{
             printf("Error: Invalid choice. Please enter 1, 2 or 3.\n");
+            pauseProgram();
         }
     }
 
@@ -431,13 +461,17 @@ int selectVehicle(){
 
 void deliveryRequest(){
 
+    clearScreen();
+
     if(deliveryCount>=MAX_DELIVERIES){
         printf("Error: Maximum delivery limit reached. Cannot add a new request!\n");
+        pauseProgram();
         return;
     }
 
     else if (cityCount < 2) {
         printf("Error: You need at least 2 cities to make a delivery.\n");
+        pauseProgram();
         return;
     }
 
@@ -453,11 +487,13 @@ void deliveryRequest(){
 
     if (sourceIdx <=0 || sourceIdx>cityCount || destIdx<=0 || destIdx>cityCount) {
         printf("Error: Invalid city index!\n");
+        pauseProgram();
         return;
     }
 
     else if (sourceIdx == destIdx) {
         printf("Error: Source and destination cities cannot be the same!\n");
+        pauseProgram();
         return;
     }
 
@@ -468,11 +504,13 @@ void deliveryRequest(){
 
     if (weight <= 0) {
         printf("Error: Weight must be a non zero positive number!\n");
+        pauseProgram();
         return;
     }
 
     else if (weight > vehicleCapacity[vehicleIdx]) {
         printf("Error: Weight exceeds the %s's capacity of %d kg.\n",vehicleTypes[vehicleIdx], vehicleCapacity[vehicleIdx]);
+        pauseProgram();
         return;
     }
 
@@ -482,6 +520,7 @@ void deliveryRequest(){
 
     if(dist == INF){
         printf("Error: No valid route exists between these two cities.\n");
+        pauseProgram();
         return;
     }
 
@@ -544,19 +583,20 @@ void deliveryRequest(){
 
             printf("Delivery recorded successfully! Total deliveries: %d\n", deliveryCount);
             printf("Date Recorded: %s\n", deliveryDate[deliveryCount - 1]);
-
+            pauseProgram();
             break;
         }
 
         else if(answer=='n' || answer=='N'){
 
             printf("Delivery cancelled. Thank You!\n");
-
+            pauseProgram();
             break;
         }
 
         else{
             printf("Error: Invalid answer. Please enter 'y' or 'n'.\n");
+            pauseProgram();
         }
 
     }
@@ -663,12 +703,14 @@ void manageDistances() {
     int choice2;
 
     do {
-        printf("\n-- Distance Management --\n");
+        printf("---------------- Distance Management -----------------\n");
         printf("1. Input/Edit Distance\n");
         printf("2. Display Distance Table\n");
         printf("3. Back to Main Menu\n");
+        printf("------------------------------------------------------\n");
         printf("Enter choice: ");
         choice2 = getSafeInput();
+        printf("------------------------------------------------------\n");
 
         switch (choice2) {
             case 1:
@@ -681,14 +723,17 @@ void manageDistances() {
                 break;
             default:
                 printf("Error: Invalid Choice!\n");
+                pauseProgram();
+                break;
         }
     } while (choice2 != 3);
 }
 
 void showReports() {
-
+    clearScreen();
     if (deliveryCount == 0) {
         printf("No deliveries completed yet!\n");
+        pauseProgram();
         return;
     }
 
@@ -726,6 +771,7 @@ void showReports() {
     printf("e. Longest Route Completed:    %d km\n", longestRoute);
     printf("e. Shortest Route Completed:   %d km\n", shortestRoute);
     printf("=============================================\n");
+    pauseProgram();
 
 }
 
@@ -856,3 +902,15 @@ int getSafeInput() {
     }
 }
 
+void clearScreen() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+void pauseProgram() {
+
+    printf("\nPress Enter to continue...");
+    getchar();
+}
