@@ -744,7 +744,7 @@ void saveData(){
     fprintf(fRoutes,"%d\n", cityCount);
 
     for (int i = 0; i<cityCount; i++) {
-        fprintf(fRoutes," %s\n", cityNames[i]);
+        fprintf(fRoutes,"%s\n", cityNames[i]);
     }
 
     for (int i = 0; i<cityCount; i++) {
@@ -781,7 +781,7 @@ void saveData(){
 void loadData() {
 
     FILE *fRoutes, *fDeliveries;
-    //loading roots
+    //loading routes
     fRoutes = fopen("routes.txt", "r");
 
     if (fRoutes == NULL) {
@@ -790,10 +790,17 @@ void loadData() {
         return;
     }
 
-    fscanf(fRoutes, "%d\n", &cityCount);
+    if (fscanf(fRoutes, "%d\n", &cityCount) != 1) {
+         printf("Error: routes.txt is corrupt. Starting empty.\n");
+         initializeDistances();
+         return;
+    }
 
-    for (int i = 0; i<cityCount; i++) {
-        fscanf(fRoutes, "%s\n", cityNames[i]);
+    for (int i=0; i<cityCount; i++) {
+        if (fgets(cityNames[i], NAME_LENGTH, fRoutes) == NULL) {
+            break;
+        }
+        cityNames[i][strcspn(cityNames[i], "\n")] = '\0';
     }
 
     for (int i=0; i<cityCount; i++) {
